@@ -1,3 +1,14 @@
+tokemon('Balbasaur',999,water,).
+tokemon('Mewtoe',999,fire)
+tokemon('Squirttlee',999,water).
+tokemon('Butterfly',999,leaves)
+tokemon('Beddril',999,leaves)
+tokemon('Pikhapikha',999,fire).
+tokemon('Charmander',999,fire).
+tokemon('Zigzogaan',999,leaves,).
+tokemon('Icanmon',water,).
+tokemon('Sangemon',leaves,).
+
 :- dynamic position/2.
 :- use_module(library(lists)).
 
