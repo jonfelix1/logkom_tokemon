@@ -18,11 +18,6 @@ menu :-
     read(X),
     option(X).
 
-w :- option(w).
-a :- option(a).
-s :- option(s).
-d :- option(d).
-help :- option('Help').
 
 
 
@@ -55,7 +50,7 @@ option('Status') :-
     menu.
 
 option('Map') :-
-
+	write('XXXXXXXXXXXX'), nl,
     menu.
     
 option('Help') :-
@@ -65,8 +60,13 @@ option('Help') :-
 	write('s : Berjalan ke bawah'), nl,
 	write('a : Berjalan ke kiri'), nl,
 	write('d : Berjalan ke kanan'), nl,
-	
+	write('-------------------------------------'), nl,
+	write('map : Look at the map'), nl,
+	write('heal : Heal a tokemon'), nl,
+	write('status : Show your status'), nl,
 	menu.
+
+print_status
 
 fightmenu :-
     read(Choice),
