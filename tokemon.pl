@@ -122,7 +122,12 @@ w :- option(w).
 a :- option(a).
 s :- option(s).
 d :- option(d).
-	
+
+battle :-
+    mode(battle),
+
+    /*Selesai battle*/
+    mode(menu).
 
 option(attack):-
     	mode(battle),
