@@ -413,15 +413,18 @@ encounter :-
 battle1 :-
 	write('Fight or run?'), nl,
 	read(X),
-	random(1,2, A),
-	ifThenElse((X = 'run', A=:=1),menu,battle).
+	random(1,3, A),
+	ifThenElse((X = 'run', A=:=1),(write('Berhasil kabur'), nl, menu),battle).
 
 checkTokemon:-
 	in_battle(Nama),
 	tokemon(Nama,Hp,_),
+	printTokemon(Nama,Hp,_),
 	ifThenElse(Hp=:=0,tokemonFaint,menu).
+
 checkEnemy:-
 	enemyTokemon(Nama,Hp,_),
+	printTokemon(Nama,Hp,_),
 	ifThenElse(Hp=:=0,enemyFaint,enemyTurn).
 
 tokemonFaint:-
