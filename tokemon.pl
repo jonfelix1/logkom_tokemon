@@ -5,6 +5,11 @@ printTokemon(Name, Hp, Type) :-
 	write('Health : '), write(Hp), nl,
 	write('Type   : '), write(Type), nl, nl.
 
+pagar(3,-2).
+pagar(3,-1).
+pagar(3,0).
+pagar(3,1).
+pagar(3,2).
 
 /* List Tokemon */
 
@@ -128,6 +133,7 @@ option(special):-
 	ifThenElse(effective(Type1,Type2),asserta(tokemon(Nama2,Health4,Type2)),asserta(tokemon(Nama2,Health3,Type2))),
 	menu.
 
+
 option(w):-
 	position(X,Y),
 	retract(position(X,Y)),
@@ -140,8 +146,9 @@ option(a):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X-1,
-	asserta(position(NewX,Y)),
-	write('Anda bergerak ke barat.'), nl,
+	ifThenElse(cekpagar(NewX, Y), write('Anda menabrak pagar'), asserta(position(NewX, Y))),
+	% asserta(position(NewX,Y)),
+	% write('Anda bergerak ke barat.'), nl,
 	menu.
 	
 option(s):-
@@ -156,8 +163,9 @@ option(d):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X+1,
-	asserta(position(NewX,Y)),
-	write('Anda bergerak ke timur.'), nl,
+	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Test'), nl)),
+	% asserta(position(NewX,Y)),
+	% write('Anda bergerak ke timur.'), nl,
 	menu.
 	
 	
@@ -182,8 +190,7 @@ option(map):-
 	write('  2 X------------X-------X       G = gym'), nl,
 	write('  1 X------------X-------X       - = grass'), nl,
 	write('  0 X---X-----P--X-------X'), nl,
-	write(' -1 X---X--------X-------X       Posisi sekarang = '),
-	write(X), write(','), write(Y), nl,
+	write(' -1 X---X--------X-------X       Posisi sekarang = '), write(X), write(','), write(Y), nl,
 	write(' -2 X---X--------X-------X'), nl,
 	write(' -3 X--------------------X'), nl,
 	write(' -4 X--------------------X'), nl,
@@ -228,4 +235,10 @@ option(save):-
 	
 	close(OS).
 	
+cekpagar(X, Y) :-
+	pagar(A,B),
+	X =:= A,
+	Y =:= B.
 
+nabrak  :-
+	write('Anda menabrak pagar'), nl.
