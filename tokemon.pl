@@ -1,4 +1,5 @@
-:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1,in_battle/1,enemyTokemon/1).
+:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1,in_battle/1,enemyTokemon/3).
+:- dynamic(spskill/0).
 
 printTokemon(Name, Hp, Type) :-
 	write(Name), nl,
@@ -109,17 +110,14 @@ position(0,0).
 
 /* Skills */
 attack(punch, 10, normal).
-attack(kick, 20, normal).
-attack(bite, 25, normal).
-attack(slam, 40, normal).
 
 /* Special skills */
-special(black_hole, 120, dark).
-special(fireball, 100, fire).
-special(tsunami, 130, water).
-special(sprout, 80, leaves).
-special(judgement, 180, light).
-special(aurora, 140, fairy).
+special(black_hole, 50, dark).
+special(fireball, 50, fire).
+special(tsunami, 50, water).
+special(sprout, 50, leaves).
+special(judgement, 50, light).
+special(aurora, 50, fairy).
 
 ifThenElse(X,Y,_):- X, !, Y.
 ifThenElse(_,_,Z):- Z.
@@ -206,48 +204,58 @@ d :- option(d).
 
 initEnemy(N) :-
 	listTokemon(L), nth(N,L,Name), info(Name,Hp,Type),
-	retractall(enemyTokemon(_)), asserta(enemyTokemon([Name])).
+	retractall(enemyTokemon(_)), asserta(enemyTokemon(Name,Hp,Type)).
 	
 battle :-
 	mode(menu),
 	retractall(mode(_)),
 	asserta(mode(battle)), random(1,7,N), initEnemy(N),
 	write('Anda memasuki battle'), nl, 
-	write('Choose your Tokemon!'), nl,
-	read(X),pick(X).
+	menu.
 
-	/*Selesai battle*/
-	% retractall(mode(_)),
-	% asserta(mode(menu)), menu.
-	
+enemyTurn :-
+	in_battle(Nama1),
+	attack(Attack,Damage,normal),
+	tokemon(Nama1,Health1,Type1),
+	enemyTokemon(Nama2,Health2,Type2),
+	retract(tokemon(Nama1,Health1,Type1)),
+	Health3 is Health1-Damage,
+	Health4 is Health1-(Damage*(1.5)),
+	write(Nama2),write(' used punch!'), nl,
+	ifThenElse(effective(Type1,Type2),asserta(tokemon(Nama1,Health4,Type1)),asserta(tokemon(Nama1,Health3,Type1))),
+	menu.
 
 option(attack):-
     	mode(battle),
-	write('Select skill: '),nl,
-	write('Punch'),nl,
-	write('Kick'),nl,
-	write('Bite'),nl,
-	write('Slam'),nl,
-	read(Attack),	
-	attack(Attack,Damage,AType),
+	in_battle(Nama1),
+	attack(Attack,Damage,normal),
 	tokemon(Nama1,Health1,Type1),
-	tokemon(Nama2,Health2,Type2),
-	retract(tokemon(Nama2,Health2,Type2)),
+	enemyTokemon(Nama2,Health2,Type2),
+	retract(enemyTokemon(Nama2,Health2,Type2)),
 	Health3 is Health2-Damage,
 	Health4 is Health2-(Damage*(1.5)),
-	ifThenElse(effective(Type1,Type2),asserta(tokemon(Nama2,Health4,Type2)),asserta(tokemon(Nama2,Health3,Type2))),
-	menu.
+	write(Nama1),write(' used punch!'), nl,
+	ifThenElse(effective(Type1,Type2),asserta(enemyTokemon(Nama2,Health4,Type2)),asserta(enemyTokemon(Nama2,Health3,Type2))),
+	enemyTurn.
+option(attack):-
+	\+in_battle(X), write('Tokemon belum dipilih!'), nl,menu.
 	
 option(special):-
-    	mode(battle),
-	special(Attack,Damage,AType),
+    	mode(battle), \+spskill,
+	in_battle(Nama1),
 	tokemon(Nama1,Health1,Type1),
-	tokemon(Nama2,Health2,Type2),
-	retract(tokemon(Nama2,Health2,Type2)),
-	Health3 is Health2-Damage,
-	Health4 is Health2-(Damage*(1.5)),
-	ifThenElse(effective(Type1,Type2),asserta(tokemon(Nama2,Health4,Type2)),asserta(tokemon(Nama2,Health3,Type2))),
-	menu.
+	special(Attack,Damage,Type1),
+	enemyTokemon(Nama2,Health2,Type2),
+	retract(enemyTokemon(Nama2,Health2,Type2)),
+	Health3 is Health2 - Damage,
+	Health4 is Health2 - (Damage*(1.5)),
+	write(Nama1), write(' used '), write(Attack), write('!'),nl,
+	ifThenElse(effective(Type1,Type2),asserta(enemyTokemon(Nama2,Health4,Type2)),asserta(enemyTokemon(Nama2,Health3,Type2))),
+	asserta(spskill),enemyTurn.
+option(special):-
+	spskill, write('Special skill hanya bisa dipakai sekali!'),nl,menu.
+option(special):-
+	\+in_battle(X), write('Tokemon belum dipilih!'),nl,menu.
 
 
 option(w):-
@@ -257,8 +265,6 @@ option(w):-
 	NewY is Y+1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke utara'), nl)),
 	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
-	% asserta(position(X,NewY)),
-	% write('Anda bergerak ke utara.'), nl,
 	encounter.
 
 option(a):-
@@ -268,8 +274,6 @@ option(a):-
 	NewX is X-1,
 	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke barat'), nl)),
 	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
-	% asserta(position(NewX,Y)),
-	% write('Anda bergerak ke barat.'), nl,
 	encounter.
 	
 option(s):-
@@ -279,8 +283,6 @@ option(s):-
 	NewY is Y-1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke selatan'), nl)),
 	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
-	% asserta(position(X,NewY)),
-	% write('Anda bergerak ke selatan.'), nl,
 	encounter.
 	
 option(d):-
@@ -290,8 +292,6 @@ option(d):-
 	NewX is X+1,
 	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke timur'), nl)),
 	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
-	% asserta(position(NewX,Y)),
-	% write('Anda bergerak ke timur.'), nl,
 	encounter.
 	
 	
@@ -341,8 +341,10 @@ option(status):-
 	ownedTokemon(X),
 	printList(X),
 	write('Your Enemy:'),nl,
-    	enemyTokemon(Y),
-	printList(Y), 
+    	enemyTokemon(A,B,C),
+	write(A), nl,
+	write('Health : '), write(B), nl,
+	write('Type   : '), write(C), nl, nl,
 	menu.
 
 option(heal) :-
@@ -383,6 +385,10 @@ option(save):-
 option(drop):-
 	write('Tokemon to drop: '), read(X),
 	dropTokemon(X).
+option(pick):-
+	mode(battle),
+	write('Choose your Tokemon!'),nl,
+	ownedTokemon(L), printList(L), read(X), pick(X).
 
 cekpagar(X, Y) :-
 	pagar(A,B),
