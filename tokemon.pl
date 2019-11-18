@@ -42,19 +42,25 @@ special(aurora, 140, fairy).
 ifThenElse(X,Y,_):- X, !, Y.
 ifThenElse(_,_,Z):- Z.
 
-drop(X):-
+dropTokemon(X):-
 	ownedTokemon(L),
-	member(X,L),
+	member(X,L),!,
 	delete(L,X,NewL),
 	retract(ownedTokemon(L)),
 	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl.
-	
+
+dropTokemon(X):-
+    write('You dont have Tokemon!'),nl.
+
 capture(X):-
 	tokemon(X,_,_),
-	ownedTokemon(L),
+	ownedTokemon(L), length(L,N), N < 6, !,
 	append([X],L,NewL),
 	retract(ownedTokemon(L)),
 	asserta(ownedTokemon(NewL)), write('You captured '), write(X), nl.
+
+capture(X) :-
+    write('Cannot capture '), write(X), write('! You have to drop one first.'), nl.
 		
 
 printList([]).
