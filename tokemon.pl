@@ -410,7 +410,13 @@ healp :-
 
 encounter :-
  	random(1, 5, A),
- 	ifThenElse(A =:= 2, battle, menu).
+ 	ifThenElse(A =:= 2, battle1, menu).
+
+battle1 :-
+	write('Fight or run?'), nl,
+	read(X),
+	random(1,2, A),
+	ifThenElse((X = 'run', A=:=1),menu,battle).
 
 checkTokemon:-
 	in_battle(Nama),
@@ -428,7 +434,7 @@ enemyFaint:-
 	retract(enemyTokemon(Nama,Hp,Type)),
 	write(Nama),write(' fainted!'), nl,
 	write('Do you want to capture '), write(Nama), write('? [y/n]'), nl, nl,
-	read(X), ifThenElse(X =:= 'y', capture(Nama), nl),
+	read(X), ifThenElse(X = 'y', capture(Nama), nl),
 	retractall(in_battle(_)),retract(spskill),retract(mode(battle)),
 	asserta(mode(menu)), menu.
 
