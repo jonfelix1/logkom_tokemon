@@ -1,1 +1,3 @@
 Attack/Battle system in general
+List pokemon milik player
+Heal

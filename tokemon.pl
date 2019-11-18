@@ -1,7 +1,14 @@
 :- dynamic(position/2).
 :- dynamic(tokemon/3).
 
+printTokemon(Name, Hp, Type) :-
+	write(Name), nl,
+	write('Health : '), write(Hp), nl,
+	write('Type   : '), write(Type), nl, nl.
+
+
 /* List Tokemon */
+tokemon('Startermon', 250, leaves).
 tokemon('Sampuramon',310,light).
 tokemon('Rampmon',220,leaves).
 tokemon('Kecapimon',170,water).
@@ -41,7 +48,8 @@ ifThenElse(_,_,Z):- Z.
 ownedTokemon([]).
 
 
-start :- write('======================================================================='), nl,
+start :- 
+	write('======================================================================='), nl,
 	write('  _______   _______   __   ___  _______   __    __   _______   _    _'), nl,
 	write(' |__   __| |  ___  | |  | /  / |  _____| |  \\  /  | |  ___  | |  \\ | | '), nl,
 	write('    | |    | |   | | |  |/  /  |  |____  |   \\/   | | |   | | |   \\| | '), nl,
@@ -146,7 +154,8 @@ option(help) :- write('Available commands: '), nl,
 	write('load(Filename). -- load your game'), nl,
 	menu.
 
-option(map):- position(X,Y), nl,
+option(map):-
+	position(X,Y), nl,
 	write('  6 XXXXXXXXXXXXXXXXXXXXXX       Map size : 20x10'), nl,
 	write('  5 X--------------------X       Legend(s):'), nl,
 	write('  4 X----XXX--------G----X       X = pagar'), nl,
@@ -162,3 +171,10 @@ option(map):- position(X,Y), nl,
 	write(' -5 XXXXXXXXXXXXXXXXXXXXXX'), nl,
 	write('  -10   -5    0   4   8  11'), nl,
 	menu.
+
+option(quit):-
+	write('Quiting the game...'),nl,
+	halt.
+
+option(status):-
+	write('Your Tokemon:'),nl.
