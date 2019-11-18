@@ -184,7 +184,7 @@ option(status):-
 
 printList([]).
 printList([H|T]) :-
-    write(H),nl,tokemon(H,X,Y),write(X),nl,write(Y),nl,
+    tokemon(H,X,Y),printTokemon(H, X, Y),
     printList(T).
 	
 option(save):-
