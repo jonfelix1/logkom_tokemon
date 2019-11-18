@@ -185,6 +185,7 @@ option(status):-
 option(save):-
 	open('loadTokemon.txt',write,OS),
 	position(X,Y),
+	retract(position(X,Y)),
 	write(OS,X), write(OS,' '),write(OS,Y), nl(OS),
 	
 	ownedTokemon(Z),
