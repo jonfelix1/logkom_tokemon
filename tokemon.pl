@@ -82,14 +82,14 @@ start :-
 	write('save(Filename). -- save your game'), nl,
 	write('load(Filename). -- load your game'), nl,
 	asserta(ownedTokemon([])), retractall(tokemon(_,_,_)), 
-	asserta(tokemon('Startermon', 250, leaves)),
-	asserta(tokemon('Sampuramon',310,light)),
-	asserta(tokemon('Rampmon',220,leaves)),
-	asserta(tokemon('Kecapimon',170,water)),
-	asserta(tokemon('Kojomon',180,fire)),
-	asserta(tokemon('Indungmon',470,fairy)),
-	asserta(tokemon('Saronmon',320,dark)),
-	asserta(tokemon('Faridmon',480,fairy)),
+	asserta(tokemon(startermon, 250, leaves)),
+	asserta(tokemon(sampuramon,310,light)),
+	asserta(tokemon(rampmon,220,leaves)),
+	asserta(tokemon(kecapimon,170,water)),
+	asserta(tokemon(kojomon,180,fire)),
+	asserta(tokemon(indungmon,470,fairy)),
+	asserta(tokemon(saronmon,320,dark)),
+	asserta(tokemon(faridmon,480,fairy)),
 	menu.
 
 menu:-
