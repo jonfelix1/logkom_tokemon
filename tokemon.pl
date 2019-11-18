@@ -177,4 +177,37 @@ option(quit):-
 	halt.
 
 option(status):-
-	write('Your Tokemon:'),nl.
+	write('Your Tokemon:'),nl,
+	ownedTokemon(X),
+	printList(X), nl,
+	write('Your Enemy:'),nl.
+
+printList([]).
+printList([H|T]) :-
+    write(H),nl,tokemon(H,X,Y),write(X),nl,write(Y),nl,
+    printList(T).
+	
+option(save):-
+	open('loadTokemon.txt',write,OS),
+	position(X,Y),
+	write(OS,X), write(OS,' '),write(OS,Y), nl(OS),
+	
+	ownedTokemon(Z),
+	write(OS,Z), nl(OS),
+
+	tokemon(sampuramon,A,light).
+	write(OS,sampuramon), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
+	tokemon(rampmon,B,leaves).
+	write(OS,rampmon), write(OS,' '),write(OS,B), write(OS,' '), write(OS,leaves), nl(OS),
+	tokemon(kecapimon,C,water).
+	write(OS,kecapimon), write(OS,' '),write(OS,C), write(OS,' '), write(OS,water), nl(OS),
+	tokemon(kojomon,D,fire).
+	write(OS,kojomon), write(OS,' '),write(OS,D), write(OS,' '), write(OS,fire), nl(OS),
+	tokemon(indungmon,E,fairy).
+	write(OS,indungmon), write(OS,' '),write(OS,E), write(OS,' '), write(OS,fairy), nl(OS),
+	tokemon(saronmon,F,dark).
+	write(OS,saronmon), write(OS,' '),write(OS,F), write(OS,' '), write(OS,dark), nl(OS),
+	tokemon(faridmon,G,fairy).
+	write(OS,faridmon), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
+	
+	close(OS).
