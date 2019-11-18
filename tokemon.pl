@@ -5,11 +5,82 @@ printTokemon(Name, Hp, Type) :-
 	write('Health : '), write(Hp), nl,
 	write('Type   : '), write(Type), nl, nl.
 
+/* Posisi pagar */
 pagar(3,-2).
 pagar(3,-1).
 pagar(3,0).
 pagar(3,1).
 pagar(3,2).
+pagar(-6,0).
+pagar(-6,-1).
+pagar(-6,-2).
+pagar(-3,4).
+pagar(-4,4).
+pagar(-5,4).
+pagar(-10,6).
+pagar(-9,6).
+pagar(-8,6).
+pagar(-7,6).
+pagar(-6,6).
+pagar(-5,6).
+pagar(-4,6).
+pagar(-3,6).
+pagar(-2,6).
+pagar(-1,6).
+pagar(0,6).
+pagar(1,6).
+pagar(2,6).
+pagar(3,6).
+pagar(4,6).
+pagar(5,6).
+pagar(6,6).
+pagar(7,6).
+pagar(8,6).
+pagar(9,6).
+pagar(10,6).
+pagar(11,6).
+pagar(-10,-5).
+pagar(-9,-5).
+pagar(-8,-5).
+pagar(-7,-5).
+pagar(-6,-5).
+pagar(-5,-5).
+pagar(-4,-5).
+pagar(-3,-5).
+pagar(-2,-5).
+pagar(-1,-5).
+pagar(0,-5).
+pagar(1,-5).
+pagar(2,-5).
+pagar(3,-5).
+pagar(4,-5).
+pagar(5,-5).
+pagar(6,-5).
+pagar(7,-5).
+pagar(8,-5).
+pagar(9,-5).
+pagar(10,-5).
+pagar(11,-5).
+pagar(11,-4).
+pagar(11,-3).
+pagar(11,-2).
+pagar(11,-1).
+pagar(11,0).
+pagar(11,1).
+pagar(11,2).
+pagar(11,3).
+pagar(11,4).
+pagar(11,5).
+pagar(-10,-4).
+pagar(-10,-3).
+pagar(-10,-2).
+pagar(-10,-1).
+pagar(-10,0).
+pagar(-10,1).
+pagar(-10,2).
+pagar(-10,3).
+pagar(-10,4).
+pagar(-10,5).
 
 /* List Tokemon */
 
