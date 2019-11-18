@@ -427,6 +427,8 @@ tokemonFaint:-
 enemyFaint:-
 	retract(enemyTokemon(Nama,Hp,Type)),
 	write(Nama),write(' fainted!'), nl,
+	write('Do you want to capture '), write(Nama), write('? [y/n]'), nl, nl,
+	read(X), ifThenElse(X =:= 'y', capture(Nama), nl),
 	retractall(in_battle(_)),retract(spskill),retract(mode(battle)),
 	asserta(mode(menu)), menu.
 
