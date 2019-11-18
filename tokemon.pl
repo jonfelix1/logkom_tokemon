@@ -1,4 +1,4 @@
-:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1,in_battle/1).
+:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1,in_battle/1,enemyTokemon/1).
 
 printTokemon(Name, Hp, Type) :-
 	write(Name), nl,
@@ -86,7 +86,15 @@ pagar(-10,5).
 gym(6,4).
 
 /* List Tokemon */
-
+listTokemon([sampuramon,rampmon,kecapimon,kojomon,indungmon,saronmon,faridmon]).
+info(startermon, 250, leaves).
+info(sampuramon,310,light).
+info(rampmon,220,leaves).
+info(kecapimon,170,water).
+info(kojomon,180,fire).
+info(indungmon,470,fairy).
+info(saronmon,320,dark).
+info(faridmon,480,fairy).
 
 /* List Types dan hubungan kefektifan antar types */
 effective(fire,leaves).
@@ -180,7 +188,7 @@ start :-
 	asserta(tokemon(indungmon,470,fairy)),
 	asserta(tokemon(saronmon,320,dark)),
 	asserta(tokemon(faridmon,480,fairy)),
-    	retractall(enemyTokemon(_)), asserta(enemyTokemon([sampuramon,rampmon,kecapimon,kojomon,indungmon,saronmon,faridmon])),
+    	retractall(enemyTokemon(_)), 
     	retractall(mode(_)),
 	asserta(mode(menu)),
     	menu.
@@ -196,18 +204,22 @@ a :- option(a).
 s :- option(s).
 d :- option(d).
 
-
+initEnemy(N) :-
+	listTokemon(L), nth(N,L,Name), info(Name,Hp,Type),
+	retractall(enemyTokemon(_)), asserta(enemyTokemon([Name])).
+	
 battle :-
+	mode(menu),
 	retractall(mode(_)),
-	asserta(mode(battle)),
+	asserta(mode(battle)), random(1,7,N), initEnemy(N),
 	write('Anda memasuki battle'), nl, 
 	write('Choose your Tokemon!'), nl,
 	read(X),pick(X).
-	/*Init enemy*/
 
 	/*Selesai battle*/
 	% retractall(mode(_)),
 	% asserta(mode(menu)), menu.
+	
 
 option(attack):-
     	mode(battle),
@@ -329,7 +341,7 @@ option(status):-
 	ownedTokemon(X),
 	printList(X),
 	write('Your Enemy:'),nl,
-    	% enemyTokemon(Y),
+    	enemyTokemon(Y),
 	printList(Y), 
 	menu.
 
@@ -370,7 +382,7 @@ option(save):-
 
 option(drop):-
 	write('Tokemon to drop: '), read(X),
-	drop(X).
+	dropTokemon(X).
 
 cekpagar(X, Y) :-
 	pagar(A,B),
