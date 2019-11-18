@@ -179,7 +179,7 @@ option(status):-
 	write('Your Tokemon:'),nl,
 	ownedTokemon(X),
 	printList(X), nl,
-	write('Your Enemy:'),nl.
+	write('Your Enemy:'),nl,
 	menu.
 	
 option(save):-
