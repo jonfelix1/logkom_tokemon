@@ -42,14 +42,14 @@ drop(X):-
 	member(X,L),
 	delete(L,X,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)).
+	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl.
 	
 capture(X):-
 	tokemon(X,_,_),
 	ownedTokemon(L),
 	append([X],L,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)).
+	asserta(ownedTokemon(NewL)), write('You captured '), write(X), nl.
 		
 
 printList([]).
@@ -82,6 +82,7 @@ start :-
 	write('status.         -- show your stat(s)'), nl,
 	write('save(Filename). -- save your game'), nl,
 	write('load(Filename). -- load your game'), nl,
+	retractall(ownedTokemon(_)),
 	asserta(ownedTokemon([startermon])), retractall(tokemon(_,_,_)), 
 	asserta(tokemon(startermon, 250, leaves)),
 	asserta(tokemon(sampuramon,310,light)),
