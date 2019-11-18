@@ -1,5 +1,4 @@
-:- dynamic(position/2).
-:- dynamic(tokemon/3).
+:- dynamic(position/2,tokemon/3,ownedTokemon/1).
 
 printTokemon(Name, Hp, Type) :-
 	write(Name), nl,
