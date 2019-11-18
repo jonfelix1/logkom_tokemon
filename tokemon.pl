@@ -1,4 +1,4 @@
-:- dynamic(position/2,tokemon/3,ownedTokemon/1).
+:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1).
 
 printTokemon(Name, Hp, Type) :-
 	write(Name), nl,
@@ -50,9 +50,10 @@ dropTokemon(X):-
 	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl.
 
 dropTokemon(X):-
-    write('You dont have Tokemon!'),nl.
+    	write('You dont have Tokemon!'),nl.
 
 capture(X):-
+    	mode(battle),
 	tokemon(X,_,_),
 	ownedTokemon(L), length(L,N), N < 6, !,
 	append([X],L,NewL),
@@ -60,15 +61,18 @@ capture(X):-
 	asserta(ownedTokemon(NewL)), write('You captured '), write(X), nl.
 
 capture(X) :-
+    mode(battle),
     write('Cannot capture '), write(X), write('! You have to drop one first.'), nl.
-		
+
+pick(X):-
+    mode(battle),
+    ownedTokemon(L),
+
 
 printList([]).
 printList([H|T]) :-
     tokemon(H,X,Y),printTokemon(H, X, Y),
     printList(T).
-    
-
 
 start :- 
 	write('======================================================================='), nl,
@@ -103,8 +107,10 @@ start :-
 	asserta(tokemon(indungmon,470,fairy)),
 	asserta(tokemon(saronmon,320,dark)),
 	asserta(tokemon(faridmon,480,fairy)),
-	retractall(enemyTokemon(_)), asserta(enemyTokemon([sampuramon,rampmon,kecapimon,kojomon,indungmon,saronmon,faridmon])),
-	menu.
+    	retractall(enemyTokemon(_)), asserta(enemyTokemon([sampuramon,rampmon,kecapimon,kojomon,indungmon,saronmon,faridmon])),
+    	retractall(mode(_)),
+	asserta(mode(menu)),
+    	menu.
 
 menu:-
 	write('> '),
@@ -119,6 +125,7 @@ d :- option(d).
 	
 
 option(attack):-
+    	mode(battle),
 	attack(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
@@ -129,6 +136,7 @@ option(attack):-
 	menu.
 	
 option(special):-
+    	mode(battle),
 	special(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
@@ -140,6 +148,7 @@ option(special):-
 
 
 option(w):-
+    	mode(menu),
 	position(X,Y),
 	retract(position(X,Y)),
 	NewY is Y+1,
@@ -149,6 +158,7 @@ option(w):-
 	menu.
 
 option(a):-
+    	mode(menu),
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X-1,
@@ -158,6 +168,7 @@ option(a):-
 	menu.
 	
 option(s):-
+    	mode(menu),
 	position(X,Y),
 	retract(position(X,Y)),
 	NewY is Y-1,
@@ -167,6 +178,7 @@ option(s):-
 	menu.
 	
 option(d):-
+    	mode(menu),
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X+1,
@@ -176,7 +188,9 @@ option(d):-
 	menu.
 	
 	
-option(help) :- write('Available commands: '), nl,
+option(help) :- 
+    	mode(menu),
+    	write('Available commands: '), nl,
 	write('start.          -- start the game!'), nl,
 	write('help.           -- show available commands'), nl,
 	write('quit.           -- quit the game'), nl,
@@ -189,6 +203,7 @@ option(help) :- write('Available commands: '), nl,
 	menu.
 
 option(map):-
+    	mode(menu),
 	position(X,Y), nl,
 	write('  6 XXXXXXXXXXXXXXXXXXXXXX       Map size : 20x10'), nl,
 	write('  5 X--------------------X       Legend(s):'), nl,
@@ -206,6 +221,7 @@ option(map):-
 	menu.
 
 option(quit):-
+    	mode(menu),
 	write('Quiting the game...'),nl,
 	halt.
 
@@ -216,13 +232,14 @@ option(exit) :-
 option(status):-
 	write('Your Tokemon:'),nl,
 	ownedTokemon(X),
-	printList(X), nl,
+	printList(X),
 	write('Your Enemy:'),nl,
-	enemyTokemon(Y),
-    	printList(Y), 
+    	enemyTokemon(Y),
+	printList(Y), 
 	menu.
 	
 option(save):-
+    	mode(menu),
 	open('loadTokemon.txt',write,OS),
 	position(X,Y),
 	retract(position(X,Y)),
@@ -231,25 +248,25 @@ option(save):-
 	ownedTokemon(Z),
 	write(OS,Z), nl(OS),
 
-	tokemon(startermon,H,leaves),
+    	tokemon(startermon,H,leaves),
 	write(OS,startermon), write(OS,' '),write(OS,H), write(OS,' '), write(OS,leaves), nl(OS),
-	tokemon('Sampuramon',A,light),
-	write(OS,'Sampuramon'), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
-	tokemon('Rampmon',B,leaves),
-	write(OS,'Rampmon'), write(OS,' '),write(OS,B), write(OS,' '), write(OS,leaves), nl(OS),
-	tokemon('Kecapimon',C,water),
-	write(OS,'Kecapimon'), write(OS,' '),write(OS,C), write(OS,' '), write(OS,water), nl(OS),
-	tokemon('Kojomon',D,fire),
-	write(OS,'Kojomon'), write(OS,' '),write(OS,D), write(OS,' '), write(OS,fire), nl(OS),
-	tokemon('Indungmon',E,fairy),
-	write(OS,'Indungmon'), write(OS,' '),write(OS,E), write(OS,' '), write(OS,fairy), nl(OS),
-	tokemon('Saronmon',F,dark),
-	write(OS,'Saronmon'), write(OS,' '),write(OS,F), write(OS,' '), write(OS,dark), nl(OS),
-	tokemon('Faridmon',G,fairy),
-	write(OS,'Faridmon'), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
+	tokemon(sampuramon,A,light),
+	write(OS,sampuramon), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
+	tokemon(rampmon,B,leaves),
+	write(OS,rampmon), write(OS,' '),write(OS,B), write(OS,' '), write(OS,leaves), nl(OS),
+	tokemon(kecapimon,C,water),
+	write(OS,kecapimon), write(OS,' '),write(OS,C), write(OS,' '), write(OS,water), nl(OS),
+	tokemon(kojomon,D,fire),
+	write(OS,kojomon), write(OS,' '),write(OS,D), write(OS,' '), write(OS,fire), nl(OS),
+	tokemon(indungmon,E,fairy),
+	write(OS,indungmon), write(OS,' '),write(OS,E), write(OS,' '), write(OS,fairy), nl(OS),
+	tokemon(saronmon,F,dark),
+	write(OS,saronmon), write(OS,' '),write(OS,F), write(OS,' '), write(OS,dark), nl(OS),
+	tokemon(faridmon,G,fairy),
+	write(OS,faridmon), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
 	
 	close(OS).
-	
+
 cekpagar(X, Y) :-
 	pagar(A,B),
 	X =:= A,
