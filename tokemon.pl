@@ -82,6 +82,9 @@ pagar(-10,3).
 pagar(-10,4).
 pagar(-10,5).
 
+% Posisi Gym
+gym(6,4).
+
 /* List Tokemon */
 
 
@@ -229,6 +232,7 @@ option(w):-
 	retract(position(X,Y)),
 	NewY is Y+1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke utara'), nl)),
+	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke utara.'), nl,
 	menu.
@@ -239,6 +243,7 @@ option(a):-
 	retract(position(X,Y)),
 	NewX is X-1,
 	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke barat'), nl)),
+	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke barat.'), nl,
 	menu.
@@ -249,6 +254,7 @@ option(s):-
 	retract(position(X,Y)),
 	NewY is Y-1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke selatan'), nl)),
+	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke selatan.'), nl,
 	menu.
@@ -259,6 +265,7 @@ option(d):-
 	retract(position(X,Y)),
 	NewX is X+1,
 	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke timur'), nl)),
+	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke timur.'), nl,
 	menu.
@@ -266,7 +273,7 @@ option(d):-
 	
 option(help) :- 
     	mode(menu),
-    	write('Available commands: '), nl,
+    write('Available commands: '), nl,
 	write('start.          -- start the game!'), nl,
 	write('help.           -- show available commands'), nl,
 	write('quit.           -- quit the game'), nl,
@@ -310,7 +317,7 @@ option(status):-
 	ownedTokemon(X),
 	printList(X),
 	write('Your Enemy:'),nl,
-    	enemyTokemon(Y),
+    	% enemyTokemon(Y),
 	printList(Y), 
 	menu.
 	
@@ -345,6 +352,11 @@ option(save):-
 
 cekpagar(X, Y) :-
 	pagar(A,B),
+	X =:= A,
+	Y =:= B.
+
+cekgym(X,Y) :-
+	gym(A,B),
 	X =:= A,
 	Y =:= B.
 
