@@ -45,6 +45,7 @@ drop(X):-
 	asserta(ownedTokemon(NewL)).
 	
 capture(X):-
+	tokemon(X,_,_),
 	ownedTokemon(L),
 	append([X],L,NewL),
 	retract(ownedTokemon(L)),
@@ -81,7 +82,7 @@ start :-
 	write('status.         -- show your stat(s)'), nl,
 	write('save(Filename). -- save your game'), nl,
 	write('load(Filename). -- load your game'), nl,
-	asserta(ownedTokemon([])), retractall(tokemon(_,_,_)), 
+	asserta(ownedTokemon([startermon])), retractall(tokemon(_,_,_)), 
 	asserta(tokemon(startermon, 250, leaves)),
 	asserta(tokemon(sampuramon,310,light)),
 	asserta(tokemon(rampmon,220,leaves)),
