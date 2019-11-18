@@ -138,9 +138,9 @@ capture(X) :-
 capture(X) :- menu.
 
 pick(X):-
-	mode(battle), ownedTokemon(L), member(X,L), !, 
+	mode(battle), ownedTokemon(L), ifThenElse(member(X,L),( 
 	retractall(in_battle(_)), asserta(in_battle(X)),
-	write('I choose you, '), write(X), write('!'), nl, menu.
+	write('I choose you, '), write(X), write('!'), nl, menu), (write('Anda tidak mempunyai pokemon itu'), nl, nl, battle)).
 
 printList([]).
 printList([H|T]) :-
@@ -200,9 +200,12 @@ d :- option(d).
 battle :-
 	retractall(mode(_)),
 	asserta(mode(battle)),
-	write('Anda memasuki battle'), nl, 
 	write('Choose your Tokemon!'), nl,
-	read(X),pick(X).
+	write('Your Tokemon:'),nl,
+	ownedTokemon(L),
+	printList(L),
+	write('>> '),
+	read(X), pick(X).
 	/*Init enemy*/
 
 	/*Selesai battle*/
@@ -370,7 +373,7 @@ option(save):-
 
 option(drop):-
 	write('Tokemon to drop: '), read(X),
-	drop(X).
+	dropTokemon(X).
 
 cekpagar(X, Y) :-
 	pagar(A,B),
@@ -390,5 +393,5 @@ healp :-
 
 encounter :-
  	random(1, 5, A),
- 	ifThenElse(A =:= 2, battle, menu).
+ 	ifThenElse(A =:= 2, (write('Anda memasuki battle'), nl, battle), menu).
 	
