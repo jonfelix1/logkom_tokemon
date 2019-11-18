@@ -1,4 +1,4 @@
-:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1).
+:- dynamic(position/2,tokemon/3,ownedTokemon/1,mode/1,in_battle/1).
 
 printTokemon(Name, Hp, Type) :-
 	write(Name), nl,
@@ -121,10 +121,9 @@ dropTokemon(X):-
 	member(X,L),!,
 	delete(L,X,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl.
-
+	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl, menu.
 dropTokemon(X):-
-    	write('You dont have Tokemon!'),nl.
+    	write('You dont have that Tokemon!'), nl, menu.
 
 capture(X):-
     	mode(battle),
@@ -133,15 +132,15 @@ capture(X):-
 	append([X],L,NewL),
 	retract(ownedTokemon(L)),
 	asserta(ownedTokemon(NewL)), write('You captured '), write(X), nl.
-
 capture(X) :-
     mode(battle),
     write('Cannot capture '), write(X), write('! You have to drop one first.'), nl.
+capture(X) :- menu.
 
 pick(X):-
-    mode(battle),
-    ownedTokemon(L),
-
+	mode(battle), ownedTokemon(L), member(X,L), !, 
+	retractall(in_battle(_)), asserta(in_battle(X)),
+	write('I choose you, '), write(X), write('!'), nl, menu.
 
 printList([]).
 printList([H|T]) :-
@@ -197,14 +196,27 @@ a :- option(a).
 s :- option(s).
 d :- option(d).
 
+
 battle :-
-    mode(battle),
-	write('Anda memasuki battle'), nl,
-    /*Selesai battle*/
-    mode(menu).
+	retractall(mode(_)),
+	asserta(mode(battle)),
+	write('Anda memasuki battle'), nl, 
+	write('Choose your Tokemon!'), nl,
+	read(X),pick(X).
+	/*Init enemy*/
+
+	/*Selesai battle*/
+	% retractall(mode(_)),
+	% asserta(mode(menu)), menu.
 
 option(attack):-
     	mode(battle),
+	write('Select skill: '),nl,
+	write('Punch'),nl,
+	write('Kick'),nl,
+	write('Bite'),nl,
+	write('Slam'),nl,
+	read(Attack),	
 	attack(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
@@ -235,7 +247,7 @@ option(w):-
 	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke utara.'), nl,
-	menu.
+	encounter.
 
 option(a):-
     	mode(menu),
@@ -246,7 +258,7 @@ option(a):-
 	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke barat.'), nl,
-	menu.
+	encounter.
 	
 option(s):-
     	mode(menu),
@@ -257,7 +269,7 @@ option(s):-
 	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke selatan.'), nl,
-	menu.
+	encounter.
 	
 option(d):-
     	mode(menu),
@@ -268,7 +280,7 @@ option(d):-
 	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke timur.'), nl,
-	menu.
+	encounter.
 	
 	
 option(help) :- 
@@ -356,7 +368,9 @@ option(save):-
 	
 	close(OS).
 
-
+option(drop):-
+	write('Tokemon to drop: '), read(X),
+	drop(X).
 
 cekpagar(X, Y) :-
 	pagar(A,B),
@@ -374,7 +388,7 @@ nabrak  :-
 healp :-
 	write('Healing your tokemon'), nl.
 
-% encounter :-
-% 	random(1, 5, a),
-% 	ifThenElse(a =:= 2, battle, menu).
+encounter :-
+ 	random(1, 5, A),
+ 	ifThenElse(A =:= 2, battle, menu).
 	
