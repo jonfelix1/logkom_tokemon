@@ -7,14 +7,7 @@ printTokemon(Name, Hp, Type) :-
 
 
 /* List Tokemon */
-tokemon(startermon, 250, leaves).
-tokemon(sampuramon,310,light).
-tokemon(rampmon,220,leaves).
-tokemon(kecapimon,170,water).
-tokemon(kojomon,180,fire).
-tokemon(indungmon,470,fairy).
-tokemon(saronmon,320,dark).
-tokemon(faridmon,480,fairy).
+
 
 /* List Types dan hubungan kefektifan antar types */
 effective(fire,leaves).
@@ -28,23 +21,41 @@ effective(fairy,dark).
 position(0,0).
 
 /* Skills */
-skill(punch,10,normal).
-skill(kick,20,normal).
-skill(bite,25,normal).
-skill(slam,40,normal).
+attack(punch, 10, normal).
+attack(kick, 20, normal).
+attack(bite, 25, normal).
+attack(slam, 40, normal).
 
 /* Special skills */
-special_skill(black_hole,120,dark).
-special_skill(fireball,100,fire).
-special_skill(tsunami,130,water).
-special_skill(sprout,80,leaves).
-special_skill(judgement,180,light).
-special_skill(aurora,140,fairy).
+special(black_hole, 120, dark).
+special(fireball, 100, fire).
+special(tsunami, 130, water).
+special(sprout, 80, leaves).
+special(judgement, 180, light).
+special(aurora, 140, fairy).
 
 ifThenElse(X,Y,_):- X, !, Y.
 ifThenElse(_,_,Z):- Z.
 
-ownedTokemon([]).
+drop(X):-
+	ownedTokemon(L),
+	member(X,L),
+	delete(L,X,NewL),
+	retract(ownedTokemon(L)),
+	asserta(ownedTokemon(NewL)).
+	
+capture(X):-
+	ownedTokemon(L),
+	append([X],L,NewL),
+	retract(ownedTokemon(L)),
+	asserta(ownedTokemon(NewL)).
+		
+
+printList([]).
+printList([H|T]) :-
+    tokemon(H,X,Y),printTokemon(H, X, Y),
+    printList(T).
+    
 
 
 start :- 
@@ -70,6 +81,15 @@ start :-
 	write('status.         -- show your stat(s)'), nl,
 	write('save(Filename). -- save your game'), nl,
 	write('load(Filename). -- load your game'), nl,
+	asserta(ownedTokemon([])), retractall(tokemon(_,_,_)), 
+	asserta(tokemon('Startermon', 250, leaves)),
+	asserta(tokemon('Sampuramon',310,light)),
+	asserta(tokemon('Rampmon',220,leaves)),
+	asserta(tokemon('Kecapimon',170,water)),
+	asserta(tokemon('Kojomon',180,fire)),
+	asserta(tokemon('Indungmon',470,fairy)),
+	asserta(tokemon('Saronmon',320,dark)),
+	asserta(tokemon('Faridmon',480,fairy)),
 	menu.
 
 menu:-
@@ -89,7 +109,7 @@ at(gym):- write('Anda berada di Gym.').
 	
 
 option(attack):-
-	skill(Attack,Damage,AType),
+	attack(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
 	retract(tokemon(Nama2,Health2,Type2)),
@@ -99,7 +119,7 @@ option(attack):-
 	menu.
 	
 option(special):-
-	special_skill(Attack,Damage,AType),
+	special(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
 	retract(tokemon(Nama2,Health2,Type2)),
@@ -191,25 +211,21 @@ option(save):-
 	ownedTokemon(Z),
 	write(OS,Z), nl(OS),
 
-	tokemon(sampuramon,A,light),
-	write(OS,sampuramon), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
-	tokemon(rampmon,B,leaves),
-	write(OS,rampmon), write(OS,' '),write(OS,B), write(OS,' '), write(OS,leaves), nl(OS),
-	tokemon(kecapimon,C,water),
-	write(OS,kecapimon), write(OS,' '),write(OS,C), write(OS,' '), write(OS,water), nl(OS),
-	tokemon(kojomon,D,fire),
-	write(OS,kojomon), write(OS,' '),write(OS,D), write(OS,' '), write(OS,fire), nl(OS),
-	tokemon(indungmon,E,fairy),
-	write(OS,indungmon), write(OS,' '),write(OS,E), write(OS,' '), write(OS,fairy), nl(OS),
-	tokemon(saronmon,F,dark),
-	write(OS,saronmon), write(OS,' '),write(OS,F), write(OS,' '), write(OS,dark), nl(OS),
-	tokemon(faridmon,G,fairy),
-	write(OS,faridmon), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
+	tokemon('Sampuramon',A,light),
+	write(OS,'Sampuramon'), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
+	tokemon('Rampmon',B,leaves),
+	write(OS,'Rampmon'), write(OS,' '),write(OS,B), write(OS,' '), write(OS,leaves), nl(OS),
+	tokemon('Kecapimon',C,water),
+	write(OS,'Kecapimon'), write(OS,' '),write(OS,C), write(OS,' '), write(OS,water), nl(OS),
+	tokemon('Kojomon',D,fire),
+	write(OS,'Kojomon'), write(OS,' '),write(OS,D), write(OS,' '), write(OS,fire), nl(OS),
+	tokemon('Indungmon',E,fairy),
+	write(OS,'Indungmon'), write(OS,' '),write(OS,E), write(OS,' '), write(OS,fairy), nl(OS),
+	tokemon('Saronmon',F,dark),
+	write(OS,'Saronmon'), write(OS,' '),write(OS,F), write(OS,' '), write(OS,dark), nl(OS),
+	tokemon('Faridmon',G,fairy),
+	write(OS,'Faridmon'), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
 	
 	close(OS).
 	
 
-printList([]).
-printList([H|T]) :-
-    tokemon(H,X,Y),printTokemon(H, X, Y),
-    printList(T).
