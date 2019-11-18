@@ -97,6 +97,7 @@ start :-
 	asserta(tokemon(indungmon,470,fairy)),
 	asserta(tokemon(saronmon,320,dark)),
 	asserta(tokemon(faridmon,480,fairy)),
+	retractall(enemyTokemon(_)), asserta(enemyTokemon([sampuramon,rampmon,kecapimon,kojomon,indungmon,saronmon,faridmon])),
 	menu.
 
 menu:-
@@ -211,6 +212,8 @@ option(status):-
 	ownedTokemon(X),
 	printList(X), nl,
 	write('Your Enemy:'),nl,
+	enemyTokemon(Y),
+    	printList(Y), 
 	menu.
 	
 option(save):-
@@ -222,6 +225,8 @@ option(save):-
 	ownedTokemon(Z),
 	write(OS,Z), nl(OS),
 
+	tokemon(startermon,H,leaves),
+	write(OS,startermon), write(OS,' '),write(OS,H), write(OS,' '), write(OS,leaves), nl(OS),
 	tokemon('Sampuramon',A,light),
 	write(OS,'Sampuramon'), write(OS,' '),write(OS,A), write(OS,' '), write(OS,light), nl(OS),
 	tokemon('Rampmon',B,leaves),
