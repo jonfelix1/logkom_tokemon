@@ -199,7 +199,7 @@ d :- option(d).
 
 battle :-
     mode(battle),
-
+	write('Anda memasuki battle'), nl,
     /*Selesai battle*/
     mode(menu).
 
@@ -232,7 +232,7 @@ option(w):-
 	retract(position(X,Y)),
 	NewY is Y+1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke utara'), nl)),
-	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
+	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke utara.'), nl,
 	menu.
@@ -243,7 +243,7 @@ option(a):-
 	retract(position(X,Y)),
 	NewX is X-1,
 	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke barat'), nl)),
-	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
+	ifThenElse(cekgym(NewX,Y),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke barat.'), nl,
 	menu.
@@ -254,7 +254,7 @@ option(s):-
 	retract(position(X,Y)),
 	NewY is Y-1,
 	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke selatan'), nl)),
-	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl)),
+	ifThenElse(cekgym(X,NewY),(write('Anda berada di gym'), nl), (write('Anda berada di rumput'), nl )),
 	% asserta(position(X,NewY)),
 	% write('Anda bergerak ke selatan.'), nl,
 	menu.
@@ -320,6 +320,12 @@ option(status):-
     	% enemyTokemon(Y),
 	printList(Y), 
 	menu.
+
+option(heal) :-
+	mode(menu),
+	position(X,Y),
+	ifThenElse(cekgym(X,Y), healp, (write('Anda tidak berada di Gym!'), nl)),
+	menu.
 	
 option(save):-
     	mode(menu),
@@ -350,6 +356,8 @@ option(save):-
 	
 	close(OS).
 
+
+
 cekpagar(X, Y) :-
 	pagar(A,B),
 	X =:= A,
@@ -362,3 +370,11 @@ cekgym(X,Y) :-
 
 nabrak  :-
 	write('Anda menabrak pagar'), nl.
+
+healp :-
+	write('Healing your tokemon'), nl.
+
+% encounter :-
+% 	random(1, 5, a),
+% 	ifThenElse(a =:= 2, battle, menu).
+	
