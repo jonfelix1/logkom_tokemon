@@ -110,10 +110,6 @@ a :- option(a).
 s :- option(s).
 d :- option(d).
 	
-at(pagar):- write('Anda menabrak pagar.').
-at(grass):- write('Anda berada pada rumput.').
-at(gym):- write('Anda berada di Gym.').
-	
 
 option(attack):-
 	attack(Attack,Damage,AType),
