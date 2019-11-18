@@ -47,13 +47,14 @@ drop(X):-
 	member(X,L),
 	delete(L,X,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)).
+	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl.
 	
 capture(X):-
+	tokemon(X,_,_),
 	ownedTokemon(L),
 	append([X],L,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)).
+	asserta(ownedTokemon(NewL)), write('You captured '), write(X), nl.
 		
 
 printList([]).
@@ -86,15 +87,16 @@ start :-
 	write('status.         -- show your stat(s)'), nl,
 	write('save(Filename). -- save your game'), nl,
 	write('load(Filename). -- load your game'), nl,
-	asserta(ownedTokemon([])), retractall(tokemon(_,_,_)), 
-	asserta(tokemon('Startermon', 250, leaves)),
-	asserta(tokemon('Sampuramon',310,light)),
-	asserta(tokemon('Rampmon',220,leaves)),
-	asserta(tokemon('Kecapimon',170,water)),
-	asserta(tokemon('Kojomon',180,fire)),
-	asserta(tokemon('Indungmon',470,fairy)),
-	asserta(tokemon('Saronmon',320,dark)),
-	asserta(tokemon('Faridmon',480,fairy)),
+	retractall(ownedTokemon(_)),
+	asserta(ownedTokemon([startermon])), retractall(tokemon(_,_,_)), 
+	asserta(tokemon(startermon, 250, leaves)),
+	asserta(tokemon(sampuramon,310,light)),
+	asserta(tokemon(rampmon,220,leaves)),
+	asserta(tokemon(kecapimon,170,water)),
+	asserta(tokemon(kojomon,180,fire)),
+	asserta(tokemon(indungmon,470,fairy)),
+	asserta(tokemon(saronmon,320,dark)),
+	asserta(tokemon(faridmon,480,fairy)),
 	menu.
 
 menu:-
@@ -138,15 +140,16 @@ option(w):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewY is Y+1,
-	asserta(position(X,NewY)),
-	write('Anda bergerak ke utara.'), nl,
+	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke utara'), nl)),
+	% asserta(position(X,NewY)),
+	% write('Anda bergerak ke utara.'), nl,
 	menu.
 
 option(a):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X-1,
-	ifThenElse(cekpagar(NewX, Y), write('Anda menabrak pagar'), asserta(position(NewX, Y))),
+	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke barat'), nl)),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke barat.'), nl,
 	menu.
@@ -155,15 +158,16 @@ option(s):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewY is Y-1,
-	asserta(position(X,NewY)),
-	write('Anda bergerak ke selatan.'), nl,
+	ifThenElse(cekpagar(X, NewY), (nabrak, asserta(position(X,Y))), (asserta(position(X, NewY)), write('Anda bergerak ke selatan'), nl)),
+	% asserta(position(X,NewY)),
+	% write('Anda bergerak ke selatan.'), nl,
 	menu.
 	
 option(d):-
 	position(X,Y),
 	retract(position(X,Y)),
 	NewX is X+1,
-	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Test'), nl)),
+	ifThenElse(cekpagar(NewX, Y), (nabrak, asserta(position(X,Y))), (asserta(position(NewX, Y)), write('Anda bergerak ke timur'), nl)),
 	% asserta(position(NewX,Y)),
 	% write('Anda bergerak ke timur.'), nl,
 	menu.
@@ -199,6 +203,10 @@ option(map):-
 	menu.
 
 option(quit):-
+	write('Quiting the game...'),nl,
+	halt.
+
+option(exit) :-
 	write('Quiting the game...'),nl,
 	halt.
 
