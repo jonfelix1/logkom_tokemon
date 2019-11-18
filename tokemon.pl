@@ -127,7 +127,7 @@ dropTokemon(X):-
 	member(X,L),!,
 	delete(L,X,NewL),
 	retract(ownedTokemon(L)),
-	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl, menu.
+	asserta(ownedTokemon(NewL)), write('You dropped '), write(X), nl, checkInventory.
 dropTokemon(X):-
     	write('You dont have that Tokemon!'), nl, menu.
 
@@ -178,7 +178,7 @@ start :-
 	write('load(Filename). -- load your game'), nl,
 	retractall(ownedTokemon(_)),
 	asserta(ownedTokemon([startermon])), retractall(tokemon(_,_,_)), 
-	asserta(tokemon(startermon, 250, leaves)),
+	asserta(tokemon(startermon,250, leaves)),
 	asserta(tokemon(sampuramon,310,light)),
 	asserta(tokemon(rampmon,220,leaves)),
 	asserta(tokemon(kecapimon,170,water)),
@@ -208,7 +208,7 @@ initEnemy(N) :-
 	
 battle :-
 	mode(menu),
-	retractall(mode(_)),
+	retractall(mode(_)), retractall(spskill),
 	asserta(mode(battle)), random(1,7,N), initEnemy(N),
 	write('Anda memasuki battle'), nl, 
 	menu.
@@ -223,7 +223,7 @@ enemyTurn :-
 	Health4 is Health1-(Damage*(1.5)),
 	write(Nama2),write(' used punch!'), nl,
 	ifThenElse(effective(Type1,Type2),asserta(tokemon(Nama1,Health4,Type1)),asserta(tokemon(Nama1,Health3,Type1))),
-	menu.
+	checkTokemon.
 
 option(attack):-
     	mode(battle),
@@ -235,8 +235,9 @@ option(attack):-
 	Health3 is Health2-Damage,
 	Health4 is Health2-(Damage*(1.5)),
 	write(Nama1),write(' used punch!'), nl,
-	ifThenElse(effective(Type1,Type2),asserta(enemyTokemon(Nama2,Health4,Type2)),asserta(enemyTokemon(Nama2,Health3,Type2))),
-	enemyTurn.
+	ifThenElse(effective(Type1,Type2), asserta(enemyTokemon(Nama2,Health4,Type2)), asserta(enemyTokemon(Nama2,Health3,Type2))),
+	checkEnemy.
+
 option(attack):-
 	\+in_battle(X), write('Tokemon belum dipilih!'), nl,menu.
 	
@@ -251,7 +252,7 @@ option(special):-
 	Health4 is Health2 - (Damage*(1.5)),
 	write(Nama1), write(' used '), write(Attack), write('!'),nl,
 	ifThenElse(effective(Type1,Type2),asserta(enemyTokemon(Nama2,Health4,Type2)),asserta(enemyTokemon(Nama2,Health3,Type2))),
-	asserta(spskill),enemyTurn.
+	asserta(spskill),checkEnemy.
 option(special):-
 	spskill, write('Special skill hanya bisa dipakai sekali!'),nl,menu.
 option(special):-
@@ -389,6 +390,7 @@ option(pick):-
 	mode(battle),
 	write('Choose your Tokemon!'),nl,
 	ownedTokemon(L), printList(L), read(X), pick(X).
+	
 
 cekpagar(X, Y) :-
 	pagar(A,B),
@@ -409,4 +411,28 @@ healp :-
 encounter :-
  	random(1, 5, A),
  	ifThenElse(A =:= 2, battle, menu).
-	
+
+checkTokemon:-
+	in_battle(Nama),
+	tokemon(Nama,Hp,_),
+	ifThenElse(Hp=:=0,tokemonFaint,menu).
+checkEnemy:-
+	enemyTokemon(Nama,Hp,_),
+	ifThenElse(Hp=:=0,enemyFaint,enemyTurn).
+
+tokemonFaint:-
+	retract(tokemon(Nama,Hp,_)),
+	write(Nama),write(' fainted! Dropping...'),nl,
+	dropTokemon(Nama).
+enemyFaint:-
+	retract(enemyTokemon(Nama,Hp,Type)),
+	write(Nama),write(' fainted!'), nl,
+	retractall(in_battle(_)),retract(spskill),retract(mode(battle)),
+	asserta(mode(menu)), menu.
+
+checkInventory:-
+	ownedTokemon(L), length(L,N),
+	ifThenElse(N=:=0, gameOver, menu).
+
+gameOver :-
+	write('You have no Tokemon left! Game over.'),nl, halt.
