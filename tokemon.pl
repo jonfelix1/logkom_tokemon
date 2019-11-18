@@ -342,10 +342,8 @@ option(status):-
 	ownedTokemon(X),
 	printList(X),
 	write('Your Enemy:'),nl,
-    	enemyTokemon(A,B,C),
-	write(A), nl,
-	write('Health : '), write(B), nl,
-	write('Type   : '), write(C), nl, nl,
+    	listTokemon(Y),
+	printList(Y),
 	menu.
 
 option(heal) :-
