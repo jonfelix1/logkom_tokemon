@@ -206,6 +206,7 @@ option(save):-
 	write(OS,faridmon), write(OS,' '),write(OS,G), write(OS,' '), write(OS,fairy), nl(OS),
 	
 	close(OS).
+	
 
 printList([]).
 printList([H|T]) :-
