@@ -7,14 +7,14 @@ printTokemon(Name, Hp, Type) :-
 
 
 /* List Tokemon */
-tokemon('Startermon', 250, leaves).
-tokemon('Sampuramon',310,light).
-tokemon('Rampmon',220,leaves).
-tokemon('Kecapimon',170,water).
-tokemon('Kojomon',180,fire).
-tokemon('Indungmon',470,fairy).
-tokemon('Saronmon',320,dark).
-tokemon('Faridmon',480,fairy).
+tokemon(startermon, 250, leaves).
+tokemon(sampuramon,310,light).
+tokemon(rampmon,220,leaves).
+tokemon(kecapimon,170,water).
+tokemon(kojomon,180,fire).
+tokemon(indungmon,470,fairy).
+tokemon(saronmon,320,dark).
+tokemon(faridmon,480,fairy).
 
 /* List Types dan hubungan kefektifan antar types */
 effective(fire,leaves).
@@ -28,18 +28,18 @@ effective(fairy,dark).
 position(0,0).
 
 /* Skills */
-attack(punch, 10, normal).
-attack(kick, 20, normal).
-attack(bite, 25, normal).
-attack(slam, 40, normal).
+skill(punch,10,normal).
+skill(kick,20,normal).
+skill(bite,25,normal).
+skill(slam,40,normal).
 
 /* Special skills */
-special(black_hole, 120, dark).
-special(fireball, 100, fire).
-special(tsunami, 130, water).
-special(sprout, 80, leaves).
-special(judgement, 180, light).
-special(aurora, 140, fairy).
+special_skill(black_hole,120,dark).
+special_skill(fireball,100,fire).
+special_skill(tsunami,130,water).
+special_skill(sprout,80,leaves).
+special_skill(judgement,180,light).
+special_skill(aurora,140,fairy).
 
 ifThenElse(X,Y,_):- X, !, Y.
 ifThenElse(_,_,Z):- Z.
@@ -89,7 +89,7 @@ at(gym):- write('Anda berada di Gym.').
 	
 
 option(attack):-
-	attack(Attack,Damage,AType),
+	skill(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
 	retract(tokemon(Nama2,Health2,Type2)),
@@ -99,7 +99,7 @@ option(attack):-
 	menu.
 	
 option(special):-
-	special(Attack,Damage,AType),
+	special_skill(Attack,Damage,AType),
 	tokemon(Nama1,Health1,Type1),
 	tokemon(Nama2,Health2,Type2),
 	retract(tokemon(Nama2,Health2,Type2)),
